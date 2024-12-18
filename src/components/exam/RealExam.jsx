@@ -27,6 +27,7 @@ const RealExam = () => {
     const [totalMark, setTotalMark] = useState('');
     const [allocatedTimeInMin, setAllocatedTimeInMin] = useState('');
     const [topics, setTopics] = useState([]);
+    const [chosenQuestionCount, setChosenQuestionCount] = useState(0);
 
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -194,7 +195,7 @@ const RealExam = () => {
                         <Row>
                             <Col md={12}>
                                 <Form.Group className="" controlId="formBasicEmail">
-                                    <Form.Label>Exam Name</Form.Label>
+                                    <Form.Label className="required-field">Exam Name</Form.Label>
                                     <Form.Control 
                                         type="text" 
                                         maxLength={ 127 }
@@ -240,11 +241,12 @@ const RealExam = () => {
                             </Col>
                             <Col md={4}>
                                 <Form.Group className="" controlId="">
-                                    <Form.Label>Total Question</Form.Label>
+                                    <Form.Label className="required-field">Total Question</Form.Label>
                                     <Form.Control
                                         type="number"
                                         placeholder="Enter Total Question" 
                                         required
+                                        min={ 1 }
                                         value={ totalQuestion }
                                         onChange={ (e) => setTotalQuestion(e.target.value) }
                                     />  
@@ -278,10 +280,14 @@ const RealExam = () => {
                 { examId && (
                     <div className="question-section mt-5">
                         <div className="question-section-header mb-3">
-                            <h3>Questions</h3>
+                            <h3>Questions ({chosenQuestionCount})</h3>
                         </div>
                         <div className="question-section-body">
-                            <ExamQuestion examId={ +examId } topics={ topics } />
+                            <ExamQuestion 
+                                examId={ +examId } 
+                                topics={ topics } 
+                                handleChosenQuestionCount={ count => setChosenQuestionCount(count) }
+                            />
                         </div>
                     </div>
                 )}

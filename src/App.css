@@ -111,6 +111,7 @@ input[type=button]:hover {
 
 .required-field::after {
   content: '*';
+  font-size: 20px;
   color: red;
   margin-left: 4px;
 }

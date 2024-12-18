@@ -8,7 +8,7 @@ import DeleteConfirmation from '../util/DeleteConfirmation';
 import Spinner from 'react-bootstrap/Spinner';
 import PropTypes from 'prop-types';
 
-const Question = ({ examId, topic }) => {
+const Question = ({ examId, topic, handleQuestionCountChange }) => {
     // State
     const [ data, setData ] = useState([]);
     const [ isLoading, setIsLoading ] = useState(true);
@@ -32,9 +32,12 @@ const Question = ({ examId, topic }) => {
 
         const url = `/exams/${examId}/questions/${topic.id}`;
 
-        const { status, data } = await get(qa, url);
-        if (status === 200) {
-            setData(data);
+        const response = await get(qa, url);
+        if (response.status === 200) {
+            if (response.data.length != data.length) {
+                handleQuestionCountChange(topic.id, response.data.length);
+            }
+            setData(response.data);
         }
         if (showLoading) {
             setIsLoading(false);
@@ -201,6 +204,7 @@ const Question = ({ examId, topic }) => {
 Question.propTypes = {
     examId: PropTypes.number.isRequired,
     topic: PropTypes.object.isRequired,
+    handleQuestionCountChange: PropTypes.func.isRequired,
 }
 
 export default Question;

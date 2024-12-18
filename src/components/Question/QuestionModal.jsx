@@ -5,6 +5,10 @@ import PropTypes from 'prop-types';
 
 const QuestionModal = ({ isCreating, show, topic, content, subTopicOptions, handleClose, handleSave }) => {
     //const [showModal, setShowModal] = useState(show);
+    const formStyle = {
+        marginBottom: '5px',
+    };
+    
     const [subTopic, setSubTopic] = useState(null);
     const [id, setId] = useState(null);
     const [questionEn, setQuestionEn] = useState('');
@@ -22,6 +26,18 @@ const QuestionModal = ({ isCreating, show, topic, content, subTopicOptions, hand
     const [option2, setOption2] = useState({...emptyOption, serial: 2});
     const [option3, setOption3] = useState({...emptyOption, serial: 3});
     const [option4, setOption4] = useState({...emptyOption, serial: 4});
+
+    const emptyError = {
+        question: '',
+        option1: '',
+        option2: '',
+        option3: '',
+        option4: '',
+        answer: '',
+    };
+    const [error, setError] = useState(emptyError);
+
+
     const [answer, setAnswer] = useState(null);
 
 
@@ -42,6 +58,7 @@ const QuestionModal = ({ isCreating, show, topic, content, subTopicOptions, hand
         setOption3({...emptyOption, serial: 3});
         setOption4({...emptyOption, serial: 4});
         setAnswer(null);
+        setError(emptyError);
     }
 
     useEffect(() => {
@@ -70,11 +87,28 @@ const QuestionModal = ({ isCreating, show, topic, content, subTopicOptions, hand
     }, [show, isCreating, content]);
 
     const validate = () => {
-        // if (!engName) {
-        //     setEngNameError('English title is required');
-        //     return false;
-        // }
-        return true;
+        const newErrors = {};
+        if (!questionEn && !questionBn) {
+            newErrors.question = 'Question is required. Fill at least one language';
+        }
+        if (!option1.valueEn && !option1.valueBn) {
+            newErrors.option1 = 'Option 1 is required. Fill at least one language';
+        }
+        if (!option2.valueEn && !option2.valueBn) {
+            newErrors.option2 = 'Option 2 is required. Fill at least one language';
+        }
+        if (!option3.valueEn && !option3.valueBn) {
+            newErrors.option3 = 'Option 3 is required. Fill at least one language';
+        }
+        if (!option4.valueEn && !option4.valueBn) {
+            newErrors.option4 = 'Option 4 is required. Fill at least one language';
+        }
+        if (!answer) {
+            newErrors.answer = 'Answer is required';
+        }
+
+        setError(newErrors);
+        return Object.keys(newErrors).length === 0;
     }
 
     const handleModalClose = () => {
@@ -84,6 +118,7 @@ const QuestionModal = ({ isCreating, show, topic, content, subTopicOptions, hand
 
     const handleUpdate = async () => {
         if (!validate()) {
+            console.error('error: ', error);
             return;
         }
 
@@ -127,139 +162,189 @@ const QuestionModal = ({ isCreating, show, topic, content, subTopicOptions, hand
                         </Row>
                         <Row>
                             <Col md={12}>
-                                <Form.Group className="">
+                                <Form.Group className="mb-2">
                                     <Form.Label className="required-field">Question (English)</Form.Label>
                                     <Form.Control
                                         type="text"
+                                        style={ formStyle }
                                         placeholder="Write Question"
                                         value={ questionEn }
                                         required
                                         maxLength={ 1024 }
                                         onChange={ (e) => setQuestionEn(e.target.value) }
+                                        isInvalid={ !!error.question }
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        { error.question }
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                             <Col md={12}>
-                                <Form.Group className="">
-                                    <Form.Label>Question (Bangla)</Form.Label>
+                                <Form.Group className="mb-2">
+                                    <Form.Label className="required-field">Question (Bangla)</Form.Label>
                                     <Form.Control
                                         type="text"
+                                        style={ formStyle }
                                         placeholder="Write Question"
                                         value={ questionBn }
                                         //required
                                         maxLength={ 512 }
                                         onChange={ (e) => setQuestionBn(e.target.value) }
+                                        isInvalid={ !!error.question }
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        { error.question }
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
-                                <Form.Group className="">
+                                <Form.Group className="mb-2">
                                     <Form.Label className="required-field">Option 1 (English)</Form.Label>
                                     <Form.Control
                                         type="text"
+                                        style={ formStyle }
                                         placeholder="Option 1"
                                         value={ option1?.valueEn }
                                         required
                                         maxLength={ 256 }
                                         onChange={ (e) => setOption1({ ...option1, valueEn: e.target.value }) }
+                                        isInvalid={ !!error.option1 }
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        { error.option1 }
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
-                                <Form.Group className="">
-                                    <Form.Label>Option 1 (Bangla)</Form.Label>
+                                <Form.Group className="mb-2">
+                                    <Form.Label className="required-field">Option 1 (Bangla)</Form.Label>
                                     <Form.Control
                                         type="text"
+                                        style={ formStyle }
                                         placeholder="Option 1"
                                         value={ option1?.valueBn }
                                         //required
                                         maxLength={ 128 }
                                         onChange={ (e) => setOption1({ ...option1, valueBn: e.target.value }) }
+                                        isInvalid={ !!error.option1 }
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        { error.option1 }
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
-                                <Form.Group className="">
+                                <Form.Group className="mb-2">
                                     <Form.Label className="required-field">Option 2 (English)</Form.Label>
                                     <Form.Control
                                         type="text"
+                                        style={ formStyle }
                                         placeholder="Option 2"
                                         value={ option2?.valueEn }
                                         required
                                         maxLength={ 256 }
                                         onChange={ (e) => setOption2({ ...option2, valueEn: e.target.value }) }
+                                        isInvalid={ !!error.option2 }
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        { error.option2 }
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
-                                <Form.Group className="">
-                                    <Form.Label>Option 2 (Bangla)</Form.Label>
+                                <Form.Group className="mb-2">
+                                    <Form.Label className="required-field">Option 2 (Bangla)</Form.Label>
                                     <Form.Control
                                         type="text"
+                                        style={ formStyle }
                                         placeholder="Option 2"
                                         value={ option2?.valueBn }
                                         //required
                                         maxLength={ 128 }
                                         onChange={ (e) => setOption2({ ...option2, valueBn: e.target.value }) }
+                                        isInvalid={ !!error.option2 }
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        { error.option2 }
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
-                                <Form.Group className="">
+                                <Form.Group className="mb-2">
                                     <Form.Label className="required-field">Option 3 (English)</Form.Label>
                                     <Form.Control
                                         type="text"
+                                        style={ formStyle }
                                         placeholder="Option 3"
                                         value={ option3?.valueEn }
                                         required
                                         maxLength={ 256 }
                                         onChange={ (e) => setOption3({ ...option3, valueEn: e.target.value }) }
+                                        isInvalid={ !!error.option3 }
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        { error.option3 }
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
-                                <Form.Group className="">
-                                    <Form.Label>Option 3 (Bangla)</Form.Label>
+                                <Form.Group className="mb-2">
+                                    <Form.Label className="required-field">Option 3 (Bangla)</Form.Label>
                                     <Form.Control
                                         type="text"
+                                        style={ formStyle }
                                         placeholder="Option 3"
                                         value={ option3?.valueBn }
                                         //required
                                         maxLength={ 128 }
                                         onChange={ (e) => setOption3({ ...option3, valueBn: e.target.value }) }
+                                        isInvalid={ !!error.option3 }
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        { error.option3 }
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
-                                <Form.Group className="">
+                                <Form.Group className="mb-2">
                                     <Form.Label className="required-field">Option 4 (English)</Form.Label>
                                     <Form.Control
                                         type="text"
+                                        style={ formStyle }
                                         placeholder="Option 4"
                                         value={ option4?.valueEn }
                                         required
                                         maxLength={ 256 }
                                         onChange={ (e) => setOption4({ ...option4, valueEn: e.target.value }) }
+                                        isInvalid={ !!error.option4 }
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        { error.option4 }
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
-                                <Form.Group className="">
-                                    <Form.Label>Option 4 (Bangla)</Form.Label>
+                                <Form.Group className="mb-2">
+                                    <Form.Label className="required-field">Option 4 (Bangla)</Form.Label>
                                     <Form.Control
                                         type="text"
+                                        style={ formStyle }
                                         placeholder="Option 4"
                                         value={ option4?.valueBn }
                                         //required
                                         maxLength={ 128 }
                                         onChange={ (e) => setOption4({ ...option4, valueBn: e.target.value }) }
+                                        isInvalid={ !!error.option4 }
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        { error.option4 }
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                         </Row>
                         <Row>
                             <Col md={6}>
-                                <Form.Group className="" controlId="">
+                                <Form.Group className="mb-2" controlId="">
                                     <Form.Label className="required-field">Answer</Form.Label>
                                     <Select
                                         options={ansOptions}
@@ -267,7 +352,11 @@ const QuestionModal = ({ isCreating, show, topic, content, subTopicOptions, hand
                                         placeholder="Select Answer"
                                         value={ ansOptions.find(option => option.value === answer) }
                                         required
+                                        isInvalid={ !!error.answer }
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        { error.answer }
+                                    </Form.Control.Feedback>
                                 </Form.Group>
                             </Col>
                         </Row>

@@ -1,0 +1,16 @@
+.accordion-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+  
+.topic-name {
+    font-weight: 500;
+}
+  
+.question-count {
+    /* font-size: 0.9rem; */
+    /* color: #666; */
+    margin-right: 50px;
+}
